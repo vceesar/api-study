@@ -1,0 +1,8 @@
+# Get the project root directory (parent of .husky)
+PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+HOOK_FILE="$PROJECT_ROOT/.git/hooks/commit-msg"
+
+# Execute the git-commit-msg-linter hook if it exists
+if [ -f "$HOOK_FILE" ]; then
+  sh "$HOOK_FILE" "$@"
+fi

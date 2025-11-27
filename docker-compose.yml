@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:latest
+    ports:
+      - '5432:5432'
+    container_name: "postgressql-express"
+    restart: always
+    networks:
+      - my-network
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=mydb
+    volumes:
+      - ./.postgresql:/postgres
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    ports:
+      - '15432:80'
+    container_name: "pagadmin-pg"
+    networks:
+      - my-network
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=victorc1104@gmail.com 
+      - PGADMIN_DEFAULT_PASSWORD=1104
+volumes:
+  -postgresql: 
+networks:
+  my-network:
+    driver: bridge

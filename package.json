@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky"
+    "prepare": "husky",
+    "postinstall": "pnpm add husky && pnpm exec husky install",
+    "dev": "node --env-file=/home/vceesar/fsc/.env src/index.js"
   },
   "keywords": [],
   "author": "",
@@ -20,5 +23,9 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "prettier": "3.6.2"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "pg": "^8.16.3"
   }
 }
