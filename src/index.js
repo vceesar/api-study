@@ -10,11 +10,28 @@ import { GetAllUsersController } from './controllers/GetAllUsersController.js'
 import { GetUserByIdController } from './controllers/GetUserByIdController.js'
 import { GetUserByIdUseCase } from './usecases/GetUserByIdUseCase.js'
 import { GetUserByIdRepository } from './repositories/postgres/GetUserByIdRepository.js'
+import { UpdateUserRepository } from './repositories/postgres/UpdateUserRepository.js'
+import { UpdateUserUseCase } from './usecases/UpdateUserUseCase.js'
+import { UpdateUserController } from './controllers/UpdateUserController.js'
 
 const dbHelperInstance = DBHelper.create(Pool)
 const app = express()
 
 app.use(express.json())
+
+app.patch('/users/:id', async (req, res) => {
+    const updateUserRepository = UpdateUserRepository.create(dbHelperInstance)
+    const updateUserUseCase = UpdateUserUseCase.create(updateUserRepository)
+    const updateUserController = UpdateUserController.create(updateUserUseCase)
+
+    try {
+        const updatedUser = await updateUserController.execute(req)
+
+        res.status(updatedUser.statusCode).send(updatedUser)
+    } catch (err) {
+        throw err
+    }
+})
 
 app.get('/users', async (_, res) => {
     const getAllUsersRepository = GetAllUsersRepository.create(dbHelperInstance)
