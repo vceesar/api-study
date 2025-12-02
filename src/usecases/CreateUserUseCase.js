@@ -1,27 +1,27 @@
-import {uuidv4} from 'uuid'
+import { v4 } from 'uuid'
 import bcrypt from 'bcrypt'
-export class CreateUserUseCase{
-  constructor(createUserRepository){
-    this.createUserRepository = createUserRepository
-  }
-
-  static create(createUserRepository){
-    return new CreateUserUseCase(createUserRepository)
-  }
-
-  async execute(UserDataParams){
-    const userId = uuidv4()
-
-    const hashedPassword = await bcrypt.hash(UserDataParams.password, 10)
-
-    const userInfo = {
-      userId,
-      password: hashedPassword,
-      ...UserDataParams
+export class CreateUserUseCase {
+    constructor(createUserRepository) {
+        this.createUserRepository = createUserRepository
     }
 
-    const createdUser = await this.createUserRepository.create(userInfo)
+    static create(createUserRepository) {
+        return new CreateUserUseCase(createUserRepository)
+    }
 
-    return await createdUser.execute()
-  }
+    async execute(UserDataParams) {
+        const userId = v4()
+
+        const hashedPassword = await bcrypt.hash(UserDataParams.password, 10)
+
+        const userInfo = {
+            ...UserDataParams,
+            id: userId,
+            password: hashedPassword,
+        }
+
+        const createdUser = await this.createUserRepository.execute(userInfo)
+
+        return createdUser
+    }
 }

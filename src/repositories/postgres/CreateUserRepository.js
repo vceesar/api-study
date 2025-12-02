@@ -1,14 +1,23 @@
 export class CreateUserRepository {
+    constructor(DBHelper) {
+        this.DBHelper = DBHelper
+    }
 
-  constructor(){}
+    static create(DBHelper) {
+        return new CreateUserRepository(DBHelper)
+    }
 
-  static create(UserDataParams){
-    return new CreateUserRepository(UserDataParams)
-  }
-
-  execute(){
-    
-  }
-
-
+    async execute(CreateUserParams) {
+        const userCreated = await this.DBHelper.query(
+            'INSERT INTO Users (id,first_name,last_name, email, password) VALUES ($1, $2, $3, $4, $5)',
+            [
+                CreateUserParams.id,
+                CreateUserParams.first_name,
+                CreateUserParams.last_name,
+                CreateUserParams.email,
+                CreateUserParams.password,
+            ]
+        )
+        return userCreated
+    }
 }

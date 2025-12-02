@@ -1,30 +1,49 @@
 import express from 'express'
-import { DBHelper } from './db/postgres/helper.js'
+import { DBHelper } from './db/postgres/DBHelper.js'
+import { CreateUserController } from './controllers/CreateUserController.js'
+import { CreateUserUseCase } from './usecases/CreateUserUseCase.js'
+import { CreateUserRepository } from './repositories/postgres/CreateUserRepository.js'
+import { Pool } from 'pg'
+import { GetAllUsersRepository } from './repositories/postgres/GetAllUsersRepository.js'
+import { GetAllUsersUseCase } from './usecases/GetAllUsersUseCase.js'
+import { GetAllUsersController } from './controllers/GetAllUsersController.js'
 
+const dbHelperInstance = DBHelper.create(Pool)
 const app = express()
 
-// Middleware to parse JSON request bodies
 app.use(express.json())
 
-app.get('/', async (req, res) => {
-    const db = await DBHelper.query('SELECT * FROM Users')
-    res.send(db)
+app.get('/users', async (_, res) => {
+    const getAllUsersRepository = GetAllUsersRepository.create(dbHelperInstance)
+    const getAllUsersUseCase = GetAllUsersUseCase.create(getAllUsersRepository)
+    const getAllUsersController =
+        GetAllUsersController.create(getAllUsersUseCase)
+
+    try {
+        const users = await getAllUsersController.execute()
+
+        res.status(200).send(users)
+    } catch (err) {
+        console.log(err)
+    }
 })
 
 app.post('/users', async (req, res) => {
-    const { id, name } = req.body
-    if (id === undefined || name === undefined) {
-        return res.status(400).send('Id or Name are invalid!')
-    }
-
+    const createUserRepository = CreateUserRepository.create(dbHelperInstance)
+    const createUserUseCase = CreateUserUseCase.create(createUserRepository)
+    const createUserController = CreateUserController.create(createUserUseCase)
     try {
-        await DBHelper.query(
-            `INSERT INTO Users (id, name) VALUES (${id}, '${name}')`
-        )
+        const userCreated = await createUserController.execute(req)
 
-        res.status(201).send('User inserted Sucessfully')
+        if (userCreated) {
+            return res.status(201).send('User inserted Sucessfully')
+        }
     } catch (error) {
-        res.status(500).send('Error inserting user: ' + error.message)
+        const statusCode = error.statusCode || 500
+        const errorBody = error.body || {
+            errorMessage: error.message || 'Internal server error',
+        }
+        return res.status(statusCode).json(errorBody)
     }
 })
 
