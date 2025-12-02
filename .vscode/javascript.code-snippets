@@ -1,0 +1,35 @@
+{
+  "Export Class from Filename": {
+    "prefix": "expclass",
+    "body": [
+      "export class ${TM_FILENAME_BASE} {",
+      "    constructor($1) {",
+      "        $2",
+      "    }",
+      "",
+      "    $0",
+      "}"
+    ],
+    "description": "Export a class with the same name as the file"
+  },
+  "Repository Pattern": {
+    "prefix": "repo",
+    "body": [
+      "export class ${TM_FILENAME_BASE} {",
+      "    constructor(DBHelper) {",
+      "        this.DBHelper = DBHelper",
+      "    }",
+      "",
+      "    static create(DBHelper) {",
+      "        return new ${TM_FILENAME_BASE}(DBHelper)",
+      "    }",
+      "",
+      "    async execute($1) {",
+      "        $0",
+      "    }",
+      "}"
+    ],
+    "description": "Repository class with static create and execute methods"
+  }
+}
+

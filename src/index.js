@@ -7,6 +7,9 @@ import { Pool } from 'pg'
 import { GetAllUsersRepository } from './repositories/postgres/GetAllUsersRepository.js'
 import { GetAllUsersUseCase } from './usecases/GetAllUsersUseCase.js'
 import { GetAllUsersController } from './controllers/GetAllUsersController.js'
+import { GetUserByIdController } from './controllers/GetUserByIdController.js'
+import { GetUserByIdUseCase } from './usecases/GetUserByIdUseCase.js'
+import { GetUserByIdRepository } from './repositories/postgres/GetUserByIdRepository.js'
 
 const dbHelperInstance = DBHelper.create(Pool)
 const app = express()
@@ -23,6 +26,20 @@ app.get('/users', async (_, res) => {
         const users = await getAllUsersController.execute()
 
         res.status(200).send(users)
+    } catch (err) {
+        console.log(err)
+    }
+})
+
+app.get('/users/:id', async (req, res) => {
+    const getUserByIdRepository = GetUserByIdRepository.create(dbHelperInstance)
+    const getUserByIdUseCase = GetUserByIdUseCase.create(getUserByIdRepository)
+    const getUserByIdController =
+        GetUserByIdController.create(getUserByIdUseCase)
+    try {
+        const users = await getUserByIdController.execute(req)
+
+        res.status(users.statusCode).send(users)
     } catch (err) {
         console.log(err)
     }

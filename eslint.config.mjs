@@ -11,6 +11,8 @@ export default defineConfig([
         languageOptions: { globals: globals.browser },
         rules: {
             'no-undef': 'off',
+            'no-useless-catch': 'off',
+            'no-unused-vars': 'off',
         },
     },
     eslintConfigPrettier,
