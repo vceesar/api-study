@@ -1,3 +1,5 @@
+import { badRequest, validRequest, notFound } from './helpers/users.js'
+
 export class GetUserByIdController {
     constructor(GetUserByIdUseCase) {
         this.GetUserByIdUseCase = GetUserByIdUseCase
@@ -13,16 +15,10 @@ export class GetUserByIdController {
             const findUserById = await this.GetUserByIdUseCase.execute(id)
 
             if (findUserById.length > 0) {
-                return {
-                    statusCode: 200,
-                    message: findUserById[0],
-                }
+                return validRequest(findUserById[0])
             }
 
-            return {
-                statusCode: 404,
-                message: `User with requested id ${id} not found.`,
-            }
+            throw notFound(`User with requested id ${id} not found.`)
         } catch (err) {
             throw err
         }

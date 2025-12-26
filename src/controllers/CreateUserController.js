@@ -1,4 +1,9 @@
 import validator from 'validator'
+import {
+    validateMissingFieldsError,
+    passwordValidationError,
+} from './helpers/errors.js'
+
 export class CreateUserController {
     constructor(CreateUserUseCase) {
         this.CreateUserUseCase = CreateUserUseCase
@@ -21,18 +26,12 @@ export class CreateUserController {
                 (typeof body[field] === 'string' &&
                     body[field].trim().length === 0)
             ) {
-                const error = new Error()
-                error.statusCode = 400
-                error.message = `Missing param: ${field}`
-                throw error
+                throw validateMissingFieldsError(field)
             }
         }
 
         if (!validator.isStrongPassword(password)) {
-            const error = new Error()
-            error.statusCode = 400
-            error.message = 'Password should be stronger'
-            throw error
+            throw passwordValidationError('Password should be stronger')
         }
 
         try {

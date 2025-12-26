@@ -1,3 +1,4 @@
+import { badRequest, validRequest } from './helpers/users.js'
 export class UpdateUserController {
     constructor(UpdateUserUseCase) {
         this.UpdateUserUseCase = UpdateUserUseCase
@@ -15,7 +16,10 @@ export class UpdateUserController {
         try {
             const updatedUser = await this.UpdateUserUseCase.execute(id, body)
 
-            return updatedUser
+            if (!updatedUser.length > 0) {
+                throw badRequest('Error while patching the user')
+            }
+            return validRequest(updatedUser[0])
         } catch (err) {
             throw err
         }

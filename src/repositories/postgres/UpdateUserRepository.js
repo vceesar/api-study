@@ -21,7 +21,7 @@ export class UpdateUserRepository {
         const queryFields = updatedFields.join(', ')
         const userIdField = updatedFields.length + 1
 
-        const query = `UPDATE Users SET ${queryFields} WHERE id = $${userIdField} RETURNING *`
+        const query = `UPDATE Users SET ${queryFields} WHERE id = $${userIdField} RETURNING id, first_name, last_name, email`
         return await this.DBHelper.query(query, updatedValues)
     }
 }

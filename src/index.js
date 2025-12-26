@@ -70,12 +70,12 @@ app.post('/users', async (req, res) => {
         const userCreated = await createUserController.execute(req)
 
         if (userCreated) {
-            return res.status(201).send('User inserted Sucessfully')
+            return res.status(201).json(userCreated)
         }
     } catch (error) {
         const statusCode = error.statusCode || 500
         const errorBody = error.body || {
-            errorMessage: error.message || 'Internal server error',
+            message: error.message || 'Internal server error',
         }
         return res.status(statusCode).json(errorBody)
     }

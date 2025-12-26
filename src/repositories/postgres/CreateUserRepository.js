@@ -9,7 +9,7 @@ export class CreateUserRepository {
 
     async execute(CreateUserParams) {
         const userCreated = await this.DBHelper.query(
-            'INSERT INTO Users (id,first_name,last_name, email, password) VALUES ($1, $2, $3, $4, $5)',
+            'INSERT INTO Users (id,first_name,last_name, email, password) VALUES ($1, $2, $3, $4, $5) RETURNING id',
             [
                 CreateUserParams.id,
                 CreateUserParams.first_name,
@@ -18,6 +18,6 @@ export class CreateUserRepository {
                 CreateUserParams.password,
             ]
         )
-        return userCreated
+        return userCreated[0]
     }
 }

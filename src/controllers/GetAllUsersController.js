@@ -1,3 +1,4 @@
+import { validRequest } from './helpers/users.js'
 export class GetAllUsersController {
     constructor(GetAllUsersUseCase) {
         this.GetAllUsersUseCase = GetAllUsersUseCase
@@ -12,10 +13,7 @@ export class GetAllUsersController {
             const users = await this.GetAllUsersUseCase.execute()
 
             if (users) {
-                return {
-                    statusCode: 200,
-                    message: users,
-                }
+                validRequest(200, users)
             }
         } catch (err) {
             throw err

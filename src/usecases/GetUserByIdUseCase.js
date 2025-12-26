@@ -12,7 +12,6 @@ export class GetUserByIdUseCase {
             const userFound =
                 await this.GetUserByIdRepository.execute(UserIdParam)
 
-            console.log(userFound)
             console.log(this.presentedOutput(userFound))
 
             return this.presentedOutput(userFound)

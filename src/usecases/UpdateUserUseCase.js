@@ -13,16 +13,6 @@ export class UpdateUserUseCase {
             userFieldsParam
         )
 
-        if (updatedUser.length > 0) {
-            return {
-                statusCode: 200,
-                message: updatedUser[0],
-            }
-        }
-
-        return {
-            statusCode: 204,
-            message: `Could'nt updated user`,
-        }
+        return updatedUser
     }
 }
