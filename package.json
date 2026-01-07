@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky",
     "postinstall": "pnpm add husky && pnpm exec husky install",
-    "dev": "node --env-file=/home/vceesar/api-study/.env --watch src/index.js"
+    "dev": "node --inspect --env-file=/home/vceesar/api-study/.env --watch src/index.js"
   },
   "keywords": [],
   "author": "",

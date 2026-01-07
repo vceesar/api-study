@@ -3,6 +3,7 @@ import {
     validateMissingFieldsError,
     passwordValidationError,
 } from './helpers/errors.js'
+import { created } from './helpers/users.js'
 
 export class CreateUserController {
     constructor(CreateUserUseCase) {
@@ -39,9 +40,9 @@ export class CreateUserController {
                 ...rest,
                 password,
             })
-            return userUseCase
+            return created(userUseCase)
         } catch (error) {
-            throw error
+            return error
         }
     }
 }

@@ -13,12 +13,16 @@ import { GetUserByIdRepository } from './repositories/postgres/GetUserByIdReposi
 import { UpdateUserRepository } from './repositories/postgres/UpdateUserRepository.js'
 import { UpdateUserUseCase } from './usecases/UpdateUserUseCase.js'
 import { UpdateUserController } from './controllers/UpdateUserController.js'
+import { GetUserByEmailController } from './controllers/GetUserByEmailController.js'
+import { GetUserByEmailUseCase } from './usecases/GetUserByEmailUseCase.js'
+import { GetUserByEmailRepository } from './repositories/postgres/GetUserByEmailRepository.js'
 
 const dbHelperInstance = DBHelper.create(Pool)
 const app = express()
 
 app.use(express.json())
 
+//Update User
 app.patch('/users/:id', async (req, res) => {
     const updateUserRepository = UpdateUserRepository.create(dbHelperInstance)
     const updateUserUseCase = UpdateUserUseCase.create(updateUserRepository)
@@ -33,21 +37,46 @@ app.patch('/users/:id', async (req, res) => {
     }
 })
 
-app.get('/users', async (_, res) => {
-    const getAllUsersRepository = GetAllUsersRepository.create(dbHelperInstance)
-    const getAllUsersUseCase = GetAllUsersUseCase.create(getAllUsersRepository)
-    const getAllUsersController =
-        GetAllUsersController.create(getAllUsersUseCase)
+//Get All Users or Get User By Email
+app.get('/users', async (req, res) => {
+    const email = req.query.email
+    if (!email) {
+        const getAllUsersRepository =
+            GetAllUsersRepository.create(dbHelperInstance)
+        const getAllUsersUseCase = GetAllUsersUseCase.create(
+            getAllUsersRepository
+        )
+        const getAllUsersController =
+            GetAllUsersController.create(getAllUsersUseCase)
 
-    try {
-        const users = await getAllUsersController.execute()
+        try {
+            const users = await getAllUsersController.execute()
+            console.log(users)
 
-        res.status(200).send(users)
-    } catch (err) {
-        console.log(err)
+            res.status(200).send(users)
+        } catch (err) {
+            console.log(err)
+        }
+    } else {
+        const getUserByEmailRepository =
+            GetUserByEmailRepository.create(dbHelperInstance)
+        const getUserByEmailUseCase = GetUserByEmailUseCase.create(
+            getUserByEmailRepository
+        )
+        const getUserByEmailController = GetUserByEmailController.create(
+            getUserByEmailUseCase
+        )
+        try {
+            const users = await getUserByEmailController.execute(req)
+
+            res.status(users.statusCode).send(users)
+        } catch (err) {
+            console.log(err)
+        }
     }
 })
 
+// Get User By Id Route
 app.get('/users/:id', async (req, res) => {
     const getUserByIdRepository = GetUserByIdRepository.create(dbHelperInstance)
     const getUserByIdUseCase = GetUserByIdUseCase.create(getUserByIdRepository)
@@ -62,6 +91,7 @@ app.get('/users/:id', async (req, res) => {
     }
 })
 
+//Create User
 app.post('/users', async (req, res) => {
     const createUserRepository = CreateUserRepository.create(dbHelperInstance)
     const createUserUseCase = CreateUserUseCase.create(createUserRepository)
@@ -70,14 +100,11 @@ app.post('/users', async (req, res) => {
         const userCreated = await createUserController.execute(req)
 
         if (userCreated) {
-            return res.status(201).json(userCreated)
+            return res.status(userCreated.statusCode).json(userCreated)
         }
     } catch (error) {
-        const statusCode = error.statusCode || 500
-        const errorBody = error.body || {
-            message: error.message || 'Internal server error',
-        }
-        return res.status(statusCode).json(errorBody)
+        console.error(error)
+        return res.status(error.statusCode).json(error)
     }
 })
 

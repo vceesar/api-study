@@ -7,5 +7,9 @@ export class GetUserByEmailUseCase {
         return new GetUserByEmailUseCase(GetUserByEmailRepository)
     }
 
-    async execute() {}
+    async execute(email) {
+        const userUseCase = this.GetUserByEmailRepository.execute(email)
+
+        return userUseCase
+    }
 }

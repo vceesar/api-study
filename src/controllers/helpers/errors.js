@@ -1,9 +1,9 @@
 import { badRequest } from './users.js'
 
 export function validateMissingFieldsError(field) {
-    return badRequest(400, `Missing param: ${field}`)
+    return badRequest(`Missing param: ${field}`)
 }
 
 export function passwordValidationError(message) {
-    return badRequest(400, message)
+    return badRequest(message)
 }

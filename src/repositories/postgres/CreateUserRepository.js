@@ -8,6 +8,7 @@ export class CreateUserRepository {
     }
 
     async execute(CreateUserParams) {
+        console.log('chamou repository')
         const userCreated = await this.DBHelper.query(
             'INSERT INTO Users (id,first_name,last_name, email, password) VALUES ($1, $2, $3, $4, $5) RETURNING id',
             [

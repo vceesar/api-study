@@ -10,6 +10,8 @@ export class CreateUserUseCase {
     }
 
     async execute(UserDataParams) {
+        console.log('chamou use case')
+
         const userId = v4()
 
         const hashedPassword = await bcrypt.hash(UserDataParams.password, 10)

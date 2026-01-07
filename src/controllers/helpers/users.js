@@ -18,3 +18,10 @@ export function notFound(message = undefined) {
         message,
     }
 }
+
+export function created(message = undefined) {
+    return {
+        statusCode: 201,
+        message: message.id,
+    }
+}

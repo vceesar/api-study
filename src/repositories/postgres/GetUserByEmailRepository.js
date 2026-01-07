@@ -7,5 +7,12 @@ export class GetUserByEmailRepository {
         return new GetUserByEmailRepository(DBHelper)
     }
 
-    async execute() {}
+    async execute(email) {
+        const userFound = this.DBHelper.query(
+            'SELECT * FROM Users WHERE EMAIL = $1',
+            [email]
+        )
+
+        return userFound
+    }
 }

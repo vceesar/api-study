@@ -13,7 +13,7 @@ export class GetAllUsersController {
             const users = await this.GetAllUsersUseCase.execute()
 
             if (users) {
-                validRequest(200, users)
+                return validRequest(users)
             }
         } catch (err) {
             throw err
