@@ -16,6 +16,9 @@ import { UpdateUserController } from './controllers/UpdateUserController.js'
 import { GetUserByEmailController } from './controllers/GetUserByEmailController.js'
 import { GetUserByEmailUseCase } from './usecases/GetUserByEmailUseCase.js'
 import { GetUserByEmailRepository } from './repositories/postgres/GetUserByEmailRepository.js'
+import { DeleteUserRepository } from './repositories/postgres/DeleteUserRepository.js'
+import { DeleteUserUseCase } from './usecases/DeleteUserUseCase.js'
+import { DeleteUserController } from './controllers/DeleteUserController.js'
 
 const dbHelperInstance = DBHelper.create(Pool)
 const app = express()
@@ -101,6 +104,24 @@ app.post('/users', async (req, res) => {
 
         if (userCreated) {
             return res.status(userCreated.statusCode).json(userCreated)
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(error.statusCode).json(error)
+    }
+})
+
+//Delete User by id
+app.delete('/users/:id', async (req, res) => {
+    const deleteUserRepository = DeleteUserRepository.create(dbHelperInstance)
+    const deleteUserUseCase = DeleteUserUseCase.create(deleteUserRepository)
+    const deleteUserController = DeleteUserController.create(deleteUserUseCase)
+
+    try {
+        const deletedUser = await deleteUserController.execute(req)
+
+        if (deletedUser) {
+            return res.status(deletedUser.statusCode).json(deletedUser)
         }
     } catch (error) {
         console.error(error)
