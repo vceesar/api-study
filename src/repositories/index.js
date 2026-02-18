@@ -1,0 +1,6 @@
+export * from './postgres/CreateUserRepository.js'
+export * from './postgres/GetAllUsersRepository.js'
+export * from './postgres/GetUserByIdRepository.js'
+export * from './postgres/UpdateUserRepository.js'
+export * from './postgres/GetUserByEmailRepository.js'
+export * from './postgres/DeleteUserRepository.js'
