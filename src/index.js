@@ -6,6 +6,7 @@ import {
   getUserByEmailFactory,
   updateUserFactory,
   getUserByIdFactory,
+  createTransactionFactory,
 } from './factories/index.js'
 
 const app = express()
@@ -69,6 +70,17 @@ app.delete('/users/:id', async (req, res) => {
     const controller = deleteUserFactory()
     const deletedUser = await controller.execute(req)
     return res.status(deletedUser.statusCode).json(deletedUser)
+  } catch (error) {
+    return res.status(error.statusCode).json(error)
+  }
+})
+
+//Create Transaction
+app.post('/transaction', async (req, res) => {
+  try {
+    const controller = createTransactionFactory()
+    const transactionCreated = await controller.execute(req)
+    return res.status(transactionCreated.statusCode).json(transactionCreated)
   } catch (error) {
     return res.status(error.statusCode).json(error)
   }
